@@ -18,7 +18,7 @@ import time
 import argparse
 import sys
 import json
-from requests import post
+#from requests import post
 from pythonosc import udp_client
 
 

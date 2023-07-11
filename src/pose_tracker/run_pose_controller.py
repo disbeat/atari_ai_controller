@@ -14,12 +14,16 @@
 import numpy as np
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
+from pythonosc import udp_client
 import asyncio
 import sys
 import pickle
 import argparse
 
 MY_SKELETON_ID = 0
+
+ATARI_SERVER_IP = "localhost"
+ATARI_SERVER_PORT = 5555
 
 
 datapath = 'data'

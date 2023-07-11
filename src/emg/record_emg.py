@@ -13,7 +13,7 @@
 from math import ceil
 import time
 from bitalino import BITalino
-from requests import post
+#from requests import post
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
