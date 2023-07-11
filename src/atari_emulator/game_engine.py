@@ -1,8 +1,12 @@
-#
-# Runs the ATARI emulator receiving commands via OSC messages in the /action 
-# and sends OSC messages with the RAM values of interest
-# 
-# Created by Marco Simoes (msimoes@dei.uc.pt) and Andre Perrota (avperrota@dei.uc.pt)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+'''
+Runs the ATARI emulator receiving commands via OSC messages in the /action 
+and sends OSC messages with the RAM values of interest
+
+Created by Marco Simoes (msimoes@dei.uc.pt) and Andre Perrota (avperrota@dei.uc.pt)
+'''
 
 import sys
 from random import randrange
@@ -10,9 +14,7 @@ from ale_py import ALEInterface, SDL_SUPPORT
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 import asyncio
-
-
-from configs.configs import LOCALHOST, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT
+from configs import ATARI_SERVER_PORT, LOCALHOST
 
 # global variables
 action = 0
@@ -27,6 +29,7 @@ prev_ram_values = {ram_id: 0 for ram_id in ram_ids_of_interest}
 def process_command(address, *args):
     ''' Every time a new OSC message is received in the /action address, 
         it saves the action in the global variable action, which is read in the main loop'''
+    
     global action
     
     action = args[0]
@@ -35,6 +38,8 @@ def process_command(address, *args):
 
 
 async def run_atari():
+    ''' Launches the ATARI emulator and enters the main loop that acts on the emulator every time a new action is received'''
+
     global action
 
     # initialize ATARI emulator
@@ -72,8 +77,7 @@ async def run_atari():
             continue
 
         # act on the emulator if action != 0
-        if action != 0:
-            reward = ale.act(ale.getLegalActionSet()[action])
+        reward = ale.act(ale.getLegalActionSet()[action])
         
         # get the RAM values
         ram = ale.getRAM()
@@ -108,7 +112,7 @@ async def init_main():
 
 
 def main():
-    ''' reads rom from file and initializes the main loop'''
+    ''' Reads rom from file and initializes the main loop'''
     # parse command line arguments
     if len(sys.argv) < 2:
         print(f"Usage: {sys.argv[0]} rom_file")

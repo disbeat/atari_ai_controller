@@ -1,20 +1,24 @@
-# Script for extracting features from EMG signals for training the classifier
-# 
-# It expects the existence of a pickle file with the names of each
-# condition in the data folder
-# 
-# To run, provide the window duration for the segmentation (in ms) as argument.
-#
-# Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
-# extract features for each segment
-#
-# Created by Marco Simões (msimoes@dei.uc.pt)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+'''
+Script for extracting features from EMG signals for training the classifier
+
+It expects the existence of a pickle file with the names of each
+condition in the data folder
+
+To run, provide the window duration for the segmentation (in ms) as argument.
+
+Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
+extract features for each segment
+
+Created by Marco Simões (msimoes@dei.uc.pt)
+'''
 
 import numpy as np
 import pickle
 import sys
-from ..ai.configs import EMG_DATA_PATH
+from configs import EMG_DATA_PATH
 
 
 
@@ -24,7 +28,7 @@ condition_codes = {
 }
 
 def preprocess_signal(signal):
-    ''' centers the signal around zero and rectifies the wave so all 
+    ''' Centers the signal around zero and rectifies the wave so all 
     values are positive'''
 
     # zero center
@@ -38,7 +42,7 @@ def preprocess_signal(signal):
 
 
 def extract_features(signal, cond, winlen):
-    ''' gets the signal of a specific condition, preprocesses it, 
+    ''' Gets the signal of a specific condition, preprocesses it, 
     segments it into windows of length winlen, and extracts the features for each one. 
     It returns a table with the samples in the lines and features in the columns, plus a last column
     with the condition label '''
@@ -65,7 +69,7 @@ def extract_features(signal, cond, winlen):
 
 
 def main():
-    ''' run in the format prepare_train_emg.py window_size (in ms)'''
+    ''' Run in the format prepare_train_emg.py window_size (in ms)'''
     
     window = 250
     if len(sys.argv) > 0:

@@ -1,14 +1,18 @@
-# Script for recording EMG signals of a specific condition
-# 
-# To use, specify the condition name and recording duration (in seconds)
-# as the first two arguments.
-# 
-# Ex: "python3 record_emg.py fire 30" will record data for the forward 
-# condition during 30 seconds, and save it in the file fire.pkl in the 
-# data folder.
-#
-# Created by Marco Simões (msimoes@dei.uc.pt)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+'''
+Script for recording EMG signals of a specific condition
+
+To use, specify the condition name and recording duration (in seconds)
+as the first two arguments.
+
+Ex: "python3 record_emg.py fire 30" will record data for the forward 
+condition during 30 seconds, and save it in the file fire.pkl in the 
+data folder.
+
+Created by Marco Simões (msimoes@dei.uc.pt)
+'''
 
 from math import ceil
 import time
@@ -20,13 +24,13 @@ import pickle
 import sys
 import json
 
-from configs.configs import EMG_DATA_PATH, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
+from configs import EMG_DATA_PATH, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
 nSamples = 1000
 
 def record(device, condition, running_time, plot=True):
-    ''' performs the EMG recording for 'running_time' seconds
+    ''' Performs the EMG recording for 'running_time' seconds
     and saves it in a pickle file'''
     
     signal = [] 
@@ -67,7 +71,7 @@ def record(device, condition, running_time, plot=True):
 
 
 def main():
-    ''' run in the format record_emg.py condition duration_in_secs'''
+    ''' Run in the format record_emg.py condition duration_in_secs'''
 
 
     condition = 'fire'

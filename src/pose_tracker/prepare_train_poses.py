@@ -1,20 +1,24 @@
-# Script for extracting features from poses for training the classifier
-# 
-# It expects the existence of a pickle file with the names of each
-# condition in the data folder
-# 
-# To run, provide the window duration for the segmentation (in ms) as argument.
-#
-# Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
-# extract features for each segment
-#
-# Created by Marco Simões (msimoes@dei.uc.pt)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+'''
+Script for extracting features from poses for training the classifier
+
+It expects the existence of a pickle file with the names of each
+condition in the data folder
+
+To run, provide the window duration for the segmentation (in ms) as argument.
+
+Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
+extract features for each segment
+
+Created by Marco Simões (msimoes@dei.uc.pt)
+'''
 
 import numpy as np
 import pickle
 import sys
-from ..ai.configs import POSE_DATA_PATH
+from configs import POSE_DATA_PATH
 
 # configs
 datapath = 'data'
@@ -31,7 +35,7 @@ condition_codes = {
 
 
 def extract_features(poses, cond):
-    ''' given a pose, extracts the features for classification '''
+    ''' Given a pose, extracts the features for classification '''
     
     # normalize based on joint 0
     for axis in range(3):
@@ -49,7 +53,7 @@ def extract_features(poses, cond):
 
 
 def main():
-    ''' run in the format prepare_train_poses.py'''
+    ''' Run in the format prepare_train_poses.py'''
    
     
     features = []

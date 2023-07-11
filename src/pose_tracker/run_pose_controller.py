@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # Script for running the pose controller to control the plain movement in River Raid
 # 
 # To use, specify the model to use (previously trained in the models folder)
@@ -19,7 +22,7 @@ import asyncio
 import sys
 import pickle
 import argparse
-from configs.configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, LOCALHOST, POSE_SERVER_PORT
+from configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, LOCALHOST, POSE_SERVER_PORT
 
 
 
@@ -29,13 +32,13 @@ previous_pred = 0
 
 
 def load_model(file_name):
-    ''' loads a model from the models folder '''
+    ''' Loads a model from the models folder '''
     with open(f'{POSE_MODELS_PATH}/{file_name}.pkl', 'rb') as f:
         return pickle.load(f)
 
 
 def establish_atari_connection():
-    ''' establishes the connection with the ATARI emulator server via OSC'''
+    ''' Establishes the connection with the ATARI emulator server via OSC'''
     client = udp_client.SimpleUDPClient(ATARI_SERVER_IP, ATARI_SERVER_PORT)
     
     return client
@@ -43,7 +46,7 @@ def establish_atari_connection():
 
 
 def extract_features(pose):
-    ''' given a pose, extracts the features for classification '''
+    ''' Given a pose, extracts the features for classification '''
     # preprocess pose
     pose = np.array(pose)
 
@@ -57,13 +60,13 @@ def extract_features(pose):
 
 
 def send_action(prediction, client):
-    ''' sends command to atari server via OSC'''
+    ''' Sends command to atari server via OSC'''
     client.send_message("/action", prediction)
     print("sent action: ", prediction)
 
 
 def read_pose(address, *args):
-    ''' records a pose snapshot sent via OSC '''
+    ''' Records a pose snapshot sent via OSC '''
     global previous_pred
     
     if args[0] == MY_SKELETON_ID:
@@ -78,38 +81,41 @@ def read_pose(address, *args):
             previous_pred = prediction
 
 
+async def loop_forever():
+    ''' Example main loop that runs forever. '''
+    while True:
+        await asyncio.sleep(1)
 
-def init_server():
 
+async def init_main():
+    ''' Initializes OSC server and runs the main loop. '''
     dispatcher = Dispatcher()
-    dispatcher.map("/filter", print)
     dispatcher.map("/pose", read_pose)
     
-    server = ThreadingOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher)
-    print("Serving on {}".format(server.server_address))
-    server.serve_forever()
-    
+    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
+
+    await loop_forever()  # Enter main loop of program
+
+    transport.close()  # Clean up serve endpoint
 
 
 
 
 def main():
-    ''' main function for running the pose controller, run as "python3 run_pose_controller.py --model 'svm'" '''
+    ''' Main function for running the pose controller, run as "python3 run_pose_controller.py --model 'svm'" '''
     global model, client
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, required=True)
     parser.add_argument('--debug', type=bool, required=False, default=False)
+    
     # Parse the argument
     args = parser.parse_args()
+    
     model = load_model(args.model_name)
     
     if not args.debug:
         client = establish_atari_connection()
    
-    init_server()
-
-
-
-if __name__ == "__main__":
-    main()
+    asyncio.run(init_main())

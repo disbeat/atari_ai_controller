@@ -1,15 +1,19 @@
-# Script for running the EMG controller to control the fire mecanism of River Raid
-# 
-# To use, specify the model to use (previously trained in the models folder), 
-# the window size (in ms)
-# 
-# Ex: "python3 run_emg_controller.py --model 'svm' --window 250" will load the 
-# svm model and evaluate the EMG at each 250 ms to send a new command to the 
-# ATARI emulator server via OSC 
-# 
-#
-# Created by Marco Simoes (msimoes@dei.uc.pt)
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+'''
+Script for running the EMG controller to control the fire mecanism of River Raid
+
+To use, specify the model to use (previously trained in the models folder), 
+the window size (in ms)
+
+Ex: "python3 run_emg_controller.py --model 'svm' --window 250" will load the 
+svm model and evaluate the EMG at each 250 ms to send a new command to the 
+ATARI emulator server via OSC 
+
+
+Created by Marco Simoes (msimoes@dei.uc.pt)
+'''
 
 import numpy as np
 from bitalino import BITalino
@@ -20,7 +24,7 @@ import sys
 import json
 #from requests import post
 from pythonosc import udp_client
-from configs.configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
+from configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
 
@@ -28,26 +32,26 @@ client = None
 
 
 def load_model(file_name):
-    ''' loads a model from the models folder '''
+    ''' Loads a model from the models folder '''
     with open(f'{EMG_MODELS_PATH}/{file_name}.pkl', 'rb') as f:
         return pickle.load(f)
 
 
 def establish_atari_connection():
-    ''' establishes the connection with the ATARI emulator server via OSC'''
+    ''' Establishes the connection with the ATARI emulator server via OSC'''
     client = udp_client.SimpleUDPClient(ATARI_SERVER_IP, ATARI_SERVER_PORT)
     
     return client
 
 
 def send_action(prediction, client):
-    ''' sends "FIRE" command to atari server via OSC'''
+    ''' Sends "FIRE" command to atari server via OSC'''
     client.send_message("/action", prediction)
     print("fire!")
 
 
 def preprocess_signal(signal):
-    ''' centers the signal around zero and rectifies the wave so all 
+    ''' Centers the signal around zero and rectifies the wave so all 
     values are positive'''
 
     # zero center
@@ -58,8 +62,10 @@ def preprocess_signal(signal):
 
     return signal
 
+
 def get_data(device, window):
-    ''' reads a segment of EMG data from the device and returns the features'''
+    ''' Reads a segment of EMG data from the device and returns the features'''
+    
     r = np.array(device.read(window))
    
     # preprocess signal
@@ -70,8 +76,10 @@ def get_data(device, window):
 
     return [features]
 
+
 def make_predictions(model, device, window, client):
-    ''' main loop for the EMG controller: get segments of data --> make prediction --> send action'''
+    ''' Main loop for the EMG controller: get segments of data --> make prediction --> send action'''
+    
     previous_pred = 0
     print('Acquiring')
     while True:
@@ -86,11 +94,8 @@ def make_predictions(model, device, window, client):
             previous_pred = prediction
             
 
-
-
-
 def main():
-    ''' main function for running the EMG controller, run as "python3 run_emg_controller.py --model 'svm' --window 250" '''
+    ''' Main function for running the EMG controller, run as "python3 run_emg_controller.py --model 'svm' --window 250" '''
 
     client = None
     parser = argparse.ArgumentParser()

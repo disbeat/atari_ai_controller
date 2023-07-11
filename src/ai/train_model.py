@@ -1,17 +1,21 @@
-# Script for training model to classify conditions based on features
-# 
-# To use, specify the model to use (svm, logistic_regression, etc)
-# 
-# Ex: "python3 train_model.py --type 'pose' --model 'svm'" will train an SVM model for pose files
-# 
-# Additional, to evaluate the performance of the model, add the parameter 
-# --train_and_evaluate set to True
-#
-# Ex: "python3 train_model.py --type 'emg' --model 'svm' --train_and_evaluate True"
-# will train and evaluate an SVM model for EMG files
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-# Created by Nuno Lourenço (naml@dei.uc.pt) and adapted by Marco Simoes (msimoes@dei.uc.pt)
+'''
+Script for training model to classify conditions based on features
 
+To use, specify the model to use (svm, logistic_regression, etc)
+
+Ex: "python3 train_model.py --type 'pose' --model 'svm'" will train an SVM model for pose files
+
+Additional, to evaluate the performance of the model, add the parameter 
+--train_and_evaluate set to True
+
+Ex: "python3 train_model.py --type 'emg' --model 'svm' --train_and_evaluate True"
+will train and evaluate an SVM model for EMG files
+
+Created by Marco Simoes (msimoes@dei.uc.pt) and Nuno Lourenco (naml@dei.uc.pt)
+'''
 
 import numpy as np
 import argparse
@@ -23,14 +27,14 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn import svm, linear_model
 from requests import post
-from configs.configs import EMG_DATA_PATH, POSE_DATA_PATH, EMG_MODELS_PATH, POSE_MODELS_PATH
+from configs import EMG_DATA_PATH, POSE_DATA_PATH, EMG_MODELS_PATH, POSE_MODELS_PATH
 
 data_path = ''
 models_path = ''
 
 
 def train_model(data, model):
-    ''' trains a model based on the data in the file features.pkl, labels are in the last column '''
+    ''' Trains a model based on the data in the file features.pkl, labels are in the last column '''
     
     # separates features from labels
     features  = data[:,:-1]
@@ -43,7 +47,7 @@ def train_model(data, model):
 
 
 def train_and_evaluate(data, model):
-    ''' trains and evaluates a model based on the data in the file features.pkl, labels are in the last column'''
+    ''' Trains and evaluates a model based on the data in the file features.pkl, labels are in the last column'''
     
     
     # separates features from labels
@@ -76,7 +80,7 @@ def train_and_evaluate(data, model):
 
 
 def load_dataset():
-    ''' loads the dataset from the file features.pkl '''
+    ''' Loads the dataset from the file features.pkl '''
     
     with open('%s/features.pkl' % data_path, 'rb') as f:
         data = pickle.load(f)
@@ -88,7 +92,7 @@ def load_dataset():
 
 
 def main():
-    ''' trains an svm or logistic regression model based on the data in the file features.pkl '''
+    ''' Trains an svm or logistic regression model based on the data in the file features.pkl '''
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--type', type=str, required=True, const='emg', default='emg', nargs='?')
