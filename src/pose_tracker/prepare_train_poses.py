@@ -7,10 +7,7 @@ Script for extracting features from poses for training the classifier
 It expects the existence of a pickle file with the names of each
 condition in the data folder
 
-To run, provide the window duration for the segmentation (in ms) as argument.
-
-Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
-extract features for each segment
+No extra arguments needed.
 
 Created by Marco Simões (msimoes@dei.uc.pt)
 '''

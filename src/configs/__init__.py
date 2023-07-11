@@ -10,14 +10,16 @@ POSE_SERVER_PORT = 12345
 
 MY_SKELETON_ID = 0
 
-POSE_DATA_PATH = 'data/pose'
-POSE_MODELS_PATH = 'models/pose'
+POSE_DATA_PATH = 'files/data/pose'
+POSE_MODELS_PATH = 'files/models/pose'
 
-EMG_DATA_PATH = 'data/emg'
-EMG_MODELS_PATH = 'models/emg'
+EMG_DATA_PATH = 'files/data/emg'
+EMG_MODELS_PATH = 'files/models/emg'
 
     
 BITALINO_MAC_ADDRESS = "/dev/tty.BITalino-BD-37-Bluetoot" # "98:D3:91:FD:40:4D"
 
 BITALINO_ACQ_CHANNELS = [0] # record A1 
 BITALINO_SRATE = 1000
+
+EMG_SEGMENTATION_WINDOW = 250

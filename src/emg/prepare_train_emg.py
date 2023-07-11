@@ -18,7 +18,7 @@ Created by Marco Simões (msimoes@dei.uc.pt)
 import numpy as np
 import pickle
 import sys
-from configs import EMG_DATA_PATH
+from configs import EMG_DATA_PATH, EMG_SEGMENTATION_WINDOW
 
 
 
@@ -71,7 +71,7 @@ def extract_features(signal, cond, winlen):
 def main():
     ''' Run in the format prepare_train_emg.py window_size (in ms)'''
     
-    window = 250
+    window = EMG_SEGMENTATION_WINDOW
     if len(sys.argv) > 0:
         window = int(sys.argv[1])
 
