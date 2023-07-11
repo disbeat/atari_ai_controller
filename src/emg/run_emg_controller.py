@@ -111,7 +111,7 @@ def main():
     
     print('connecing to bitalino')
     # Connect to BITalino
-    device = BITalino(BITALINO_ADDRESS)
+    device = BITalino(BITALINO_MAC_ADDRESS)
     print('connected')
 
     # Start Acquisition

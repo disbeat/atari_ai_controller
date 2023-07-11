@@ -89,7 +89,7 @@ def main():
     print(features)
 
     # saves features to file
-    with open('%s/features.pkl' % datapath, 'wb') as f:
+    with open('%s/features.pkl' % EMG_DATA_PATH, 'wb') as f:
         pickle.dump(features, f)    
 
 

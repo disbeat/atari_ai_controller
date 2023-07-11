@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Script for running the pose controller to control the plain movement in River Raid
-# 
-# To use, specify the model to use (previously trained in the models folder)
-# 
-# Ex: "python3 run_pose_controller.py --model 'svm'" will load the 
-# svm model and evaluate each pose to send a new command to the 
-# ATARI emulator server via OSC 
-# 
-#
-# Created by Marco Simoes (msimoes@dei.uc.pt)
+'''
+Script for running the pose controller to control the plain movement in River Raid
 
-# pose format: timestamp, skeleton_id, x, y, z for each joint (25 joints)
+To use, specify the model to use (previously trained in the models folder)
+
+Ex: "python3 run_pose_controller.py --model 'svm'" will load the 
+svm model and evaluate each pose to send a new command to the 
+ATARI emulator server via OSC 
+
+
+Created by Marco Simoes (msimoes@dei.uc.pt)
+'''
+
+# pose format: skeleton_id, x, y, z for each joint (25 joints)
 
 import numpy as np
-from pythonosc.osc_server import ThreadingOSCUDPServer
+from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 from pythonosc import udp_client
 import asyncio
