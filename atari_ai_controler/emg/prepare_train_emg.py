@@ -14,7 +14,7 @@
 import numpy as np
 import pickle
 import sys
-from ..configs import EMG_DATA_PATH
+from ..ai.configs import EMG_DATA_PATH
 
 
 

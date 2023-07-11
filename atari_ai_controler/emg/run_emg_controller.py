@@ -20,7 +20,7 @@ import sys
 import json
 #from requests import post
 from pythonosc import udp_client
-from ..configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
+from configs.configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
 

@@ -23,7 +23,7 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn import svm, linear_model
 from requests import post
-from ..configs import EMG_DATA_PATH, POSE_DATA_PATH, EMG_MODELS_PATH, POSE_MODELS_PATH
+from configs.configs import EMG_DATA_PATH, POSE_DATA_PATH, EMG_MODELS_PATH, POSE_MODELS_PATH
 
 data_path = ''
 models_path = ''

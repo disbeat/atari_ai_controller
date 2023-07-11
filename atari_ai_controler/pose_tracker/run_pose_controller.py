@@ -12,14 +12,14 @@
 # pose format: timestamp, skeleton_id, x, y, z for each joint (25 joints)
 
 import numpy as np
-from pythonosc.osc_server import AsyncIOOSCUDPServer
+from pythonosc.osc_server import ThreadingOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 from pythonosc import udp_client
 import asyncio
 import sys
 import pickle
 import argparse
-from ..configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, LOCALHOST, POSE_SERVER_PORT
+from configs.configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, LOCALHOST, POSE_SERVER_PORT
 
 
 
@@ -79,22 +79,16 @@ def read_pose(address, *args):
 
 
 
-async def loop_forever():
-    """Example main loop that only waits duration time before finishing"""
-    while True:
-        await asyncio.sleep(1)
+def init_server():
 
-
-async def init_main():
     dispatcher = Dispatcher()
+    dispatcher.map("/filter", print)
     dispatcher.map("/pose", read_pose)
     
-    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
-
-    await loop_forever()  # Enter main loop of program
-
-    transport.close()  # Clean up serve endpoint
+    server = ThreadingOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher)
+    print("Serving on {}".format(server.server_address))
+    server.serve_forever()
+    
 
 
 
@@ -113,7 +107,7 @@ def main():
     if not args.debug:
         client = establish_atari_connection()
    
-    asyncio.run(init_main())
+    init_server()
 
 
 

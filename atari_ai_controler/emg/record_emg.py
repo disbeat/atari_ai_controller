@@ -20,7 +20,7 @@ import pickle
 import sys
 import json
 
-from ..configs import EMG_DATA_PATH, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
+from configs.configs import EMG_DATA_PATH, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
 nSamples = 1000

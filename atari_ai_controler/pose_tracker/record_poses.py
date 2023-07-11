@@ -13,14 +13,41 @@
 # pose format: timestamp, skeleton_id, x, y, z for each joint (25 joints)
 
 import numpy as np
-from pythonosc.osc_server import AsyncIOOSCUDPServer
+from pythonosc.osc_server import ThreadingOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 import asyncio
 import sys
 import pickle
 import time
 
-from ..configs import MY_SKELETON_ID, LOCALHOST, POSE_SERVER_PORT, POSE_DATA_PATH
+#from configs import MY_SKELETON_ID, LOCALHOST, POSE_SERVER_PORT, POSE_DATA_PATH
+
+# set up osc server
+ATARI_SERVER_IP = "127.0.0.1"
+ATARI_SERVER_PORT = 5555
+
+SOUND_SERVER_IP = "127.0.0.1"
+SOUND_SERVER_PORT = 6666
+
+LOCALHOST = "localhost"
+POSE_SERVER_PORT = 12345
+
+MY_SKELETON_ID = 0
+
+POSE_DATA_PATH = 'data/pose'
+POSE_MODELS_PATH = 'models/pose'
+
+EMG_DATA_PATH = 'data/emg'
+EMG_MODELS_PATH = 'models/emg'
+
+    
+BITALINO_ADDRESS = "/dev/tty.BITalino-BD-37-Bluetoot" # "98:D3:91:FD:40:4D"
+
+BITALINO_ACQ_CHANNELS = [0] # record A1 
+BITALINO_SRATE = 1000
+
+
+
 
 pose_data = []
 
@@ -49,7 +76,7 @@ def record_pose(address, *args):
         pose = args[1:]
         pose_data.append(pose)
         
-        print('num of recorded poses: ', len(pose_data))
+    print('num of recorded poses: ', len(pose_data))
 
 
 def save_pose_data(condition):
@@ -62,27 +89,16 @@ def save_pose_data(condition):
         pickle.dump(pose_data, f) 
 
 
-async def loop(duration=30):
-    """ runs the main loop for duration seconds"""
-    
-    await asyncio.sleep(duration)
+def init_server(condition, running):
 
-
-async def init_main(condition, running_time):
-    ''' inits OSC server and runs main loop for running_time seconds'''
-    
     dispatcher = Dispatcher()
+    dispatcher.map("/filter", print)
     dispatcher.map("/pose", record_pose)
     
-    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
-    transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
-
+    server = ThreadingOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher)
+    print("Serving on {}".format(server.server_address))
+    server.serve_forever()
     
-    await loop(running_time)  # Enter main loop of program
-
-    transport.close()  # Clean up serve endpoint
-
-    save_pose_data(condition)
 
 
 def main():
@@ -102,7 +118,7 @@ def main():
         print("will start in %d seconds"% eta)
         time.sleep(1)
     
-    asyncio.run(init_main(condition, running_time))
+    init_server(condition, running_time)
 
 
 

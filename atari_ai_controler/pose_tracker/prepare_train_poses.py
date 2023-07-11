@@ -14,7 +14,7 @@
 import numpy as np
 import pickle
 import sys
-from ..configs import POSE_DATA_PATH
+from ..ai.configs import POSE_DATA_PATH
 
 # configs
 datapath = 'data'

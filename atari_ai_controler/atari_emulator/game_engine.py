@@ -12,7 +12,7 @@ from pythonosc.dispatcher import Dispatcher
 import asyncio
 
 
-from ..configs import LOCALHOST, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT
+from configs.configs import LOCALHOST, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT
 
 # global variables
 action = 0
@@ -99,7 +99,7 @@ async def init_main():
     dispatcher.map("/action", process_command)
     
     # initialize OSC server
-    server = AsyncIOOSCUDPServer((ATARI_SERVER_IP, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((LOCALHOST, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
     
     await run_atari()  # Enter main loop of program
