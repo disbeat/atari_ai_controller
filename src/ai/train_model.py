@@ -2,13 +2,13 @@
 # 
 # To use, specify the model to use (svm, logistic_regression, etc)
 # 
-# Ex: "python3 train_model.py --model 'svm'" will train an SVM model 
+# Ex: "python3 train_model.py --type 'pose' --model 'svm'" will train an SVM model for pose files
 # 
 # Additional, to evaluate the performance of the model, add the parameter 
 # --train_and_evaluate set to True
 #
-# Ex: "python3 train_model.py --model 'svm' --train_and_evaluate True"
-# will train and evaluate an SVM model 
+# Ex: "python3 train_model.py --type 'emg' --model 'svm' --train_and_evaluate True"
+# will train and evaluate an SVM model for EMG files
 
 # Created by Nuno Lourenço (naml@dei.uc.pt) and adapted by Marco Simoes (msimoes@dei.uc.pt)
 
@@ -23,10 +23,10 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn import svm, linear_model
 from requests import post
+from ..configs import EMG_DATA_PATH, POSE_DATA_PATH, EMG_MODELS_PATH, POSE_MODELS_PATH
 
-
-data_path = 'data'
-models_path = 'models'
+data_path = ''
+models_path = ''
 
 
 def train_model(data, model):
@@ -91,27 +91,39 @@ def main():
     ''' trains an svm or logistic regression model based on the data in the file features.pkl '''
     
     parser = argparse.ArgumentParser()
+    parser.add_argument('--type', type=str, required=True, const='emg', default='emg', nargs='?')
     parser.add_argument('--model', type=str, required=True, const='svm', default='svm', nargs='?')
     parser.add_argument('--train_and_evaluate', type=bool, required=False, const=False, default=False, nargs='?')
     
     # Parse the argument
     args = parser.parse_args()
     
+    if args.type == 'emg':
+        data_path = EMG_DATA_PATH
+        models_path = EMG_MODELS_PATH
+    else:
+        data_path = POSE_DATA_PATH
+        models_path = POSE_MODELS_PATH
+
+
     if args.model == 'svm':
         model = svm.SVC()
     else:
         model = linear_model.LogisticRegression()
 
 
-    if args.train_and_evaluate:
-         model = train_and_evaluate(df, MODEL)
     
     # loads dataset from file
     dataset = load_dataset()
     
+    if args.train_and_evaluate:
+         model = train_and_evaluate(dataset, model)
+    
     # trains the model
     model = train_model(dataset, model)
     
+    
+
     # saves the model to file
     with open('%s/%s.pkl' % (models_path, args.model), 'wb') as f:
         pickle.dump(model,f)

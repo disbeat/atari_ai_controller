@@ -14,12 +14,13 @@
 import numpy as np
 import pickle
 import sys
-
+from ..configs import POSE_DATA_PATH
 
 # configs
 datapath = 'data'
 
 condition_codes = {
+    'rest': 0,
     'left': 4,
     'right': 3,
     'up': 2,
@@ -54,7 +55,7 @@ def main():
     features = []
 
     for condition in condition_codes.keys():
-        with open('%s/%s.pkl' % (datapath, condition), 'rb') as f:
+        with open('%s/%s.pkl' % (POSE_DATA_PATH, condition), 'rb') as f:
             poses = pickle.load(f)
 
             features.append(extract_features(np.array(poses), condition))
@@ -64,7 +65,7 @@ def main():
     print(features)
 
     # saves features to file
-    with open('%s/features.pkl' % datapath, 'wb') as f:
+    with open('%s/features.pkl' % POSE_DATA_PATH, 'wb') as f:
         pickle.dump(features, f)    
 
 

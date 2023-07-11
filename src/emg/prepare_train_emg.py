@@ -14,10 +14,9 @@
 import numpy as np
 import pickle
 import sys
+from ..configs import EMG_DATA_PATH
 
 
-# configs
-datapath = 'data'
 
 condition_codes = {
     'rest': 0,
@@ -76,7 +75,7 @@ def main():
     features = []
 
     for condition in condition_codes.keys():
-        with open('%s/%s.pkl' % (datapath, condition), 'rb') as f:
+        with open('%s/%s.pkl' % (EMG_DATA_PATH, condition), 'rb') as f:
             signal = pickle.load(f)
 
             features.append(extract_features(np.array(signal), condition, window))

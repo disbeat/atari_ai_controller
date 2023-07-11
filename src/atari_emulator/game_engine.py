@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-# python_example.py
-# Author: Ben Goodrich
 #
-# This is a direct port to python of the shared library example from
-# ALE provided in examples/sharedLibraryInterfaceExample.cpp
+# Runs the ATARI emulator receiving commands via OSC messages in the /action 
+# and sends OSC messages with the RAM values of interest
+# 
+# Created by Marco Simoes (msimoes@dei.uc.pt) and Andre Perrota (avperrota@dei.uc.pt)
 
 import sys
 from random import randrange
@@ -13,19 +12,16 @@ from pythonosc.dispatcher import Dispatcher
 import asyncio
 
 
-
-# set up osc server
-ATARI_SERVER_IP = "127.0.0.1"
-ATARI_SERVER_PORT = 5555
+from ..configs import LOCALHOST, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT
 
 # global variables
 action = 0
 reward = 0
 
-# parse command line arguments
-if len(sys.argv) < 2:
-    print(f"Usage: {sys.argv[0]} rom_file")
-    sys.exit()
+# ids of the RAM values of interest for sound play
+ram_ids_of_interest = [7, 58, 104, 120, 121, 122, 123]
+prev_ram_values = {ram_id: 0 for ram_id in ram_ids_of_interest}
+
 
 
 def process_command(address, *args):
@@ -37,14 +33,6 @@ def process_command(address, *args):
     print("action = ", action)
 
 
-# create dispatcher that listens for messages on /action
-dispatcher = Dispatcher()
-dispatcher.map("/action", process_command)
-
-
-
-ram_ids_of_interest = [7, 58, 104, 120, 121, 122, 123]
-prev_ram_values = {ram_id: 0 for ram_id in ram_ids_of_interest}
 
 async def run_atari():
     global action
@@ -105,11 +93,28 @@ async def run_atari():
 
 async def init_main():
     ''' Set up OSC server and initializes atari'''
+    
+    # create dispatcher that listens for messages on /action
+    dispatcher = Dispatcher()
+    dispatcher.map("/action", process_command)
+    
+    # initialize OSC server
     server = AsyncIOOSCUDPServer((ATARI_SERVER_IP, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
+    
     await run_atari()  # Enter main loop of program
+    
     transport.close()  # Clean up serve endpoint
 
 
+def main():
+    ''' reads rom from file and initializes the main loop'''
+    # parse command line arguments
+    if len(sys.argv) < 2:
+        print(f"Usage: {sys.argv[0]} rom_file")
+        sys.exit()
 
-asyncio.run(init_main())
+    asyncio.run(init_main())
+
+if __name__ == "__main__":
+    main()

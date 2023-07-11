@@ -18,12 +18,13 @@ from pythonosc.dispatcher import Dispatcher
 import asyncio
 import sys
 import pickle
+import time
 
-MY_SKELETON_ID = 0
+from ..configs import MY_SKELETON_ID, LOCALHOST, POSE_SERVER_PORT, POSE_DATA_PATH
 
 pose_data = []
 
-datapath = 'data'
+
 
 def extract_features(pose):
     ''' given a pose, extracts the features for classification '''
@@ -43,9 +44,9 @@ def record_pose(address, *args):
     ''' records a pose snapshot sent via OSC '''
     global pose_data
     
-    if args[1] == MY_SKELETON_ID:
-        # skip timestamp and skeleton id
-        pose = args[2:]
+    if args[0] == MY_SKELETON_ID:
+        # skip skeleton id
+        pose = args[1:]
         pose_data.append(pose)
         
         print('num of recorded poses: ', len(pose_data))
@@ -57,25 +58,26 @@ def save_pose_data(condition):
     pose_data = np.vstack(pose_data)
     
     # saves data to file
-    with open('%s/%s.pkl' % (datapath, condition), 'wb') as f:
+    with open('%s/%s.pkl' % (POSE_DATA_PATH, condition), 'wb') as f:
         pickle.dump(pose_data, f) 
 
-dispatcher = Dispatcher()
-dispatcher.map("/pose", record_pose)
-
-ip = "127.0.0.1"
-port = 6666
 
 async def loop(duration=30):
-    """Example main loop that only waits duration time before finishing"""
+    """ runs the main loop for duration seconds"""
     
     await asyncio.sleep(duration)
 
 
 async def init_main(condition, running_time):
-    server = AsyncIOOSCUDPServer((ip, port), dispatcher, asyncio.get_event_loop())
+    ''' inits OSC server and runs main loop for running_time seconds'''
+    
+    dispatcher = Dispatcher()
+    dispatcher.map("/pose", record_pose)
+    
+    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
 
+    
     await loop(running_time)  # Enter main loop of program
 
     transport.close()  # Clean up serve endpoint

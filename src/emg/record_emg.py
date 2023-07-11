@@ -20,24 +20,10 @@ import pickle
 import sys
 import json
 
+from ..configs import EMG_DATA_PATH, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
-# device configs
-
-
-# The macAddress variable on Windows can be "XX:XX:XX:XX:XX:XX" or "COMX"
-# while on Mac OS can be "/dev/tty.BITalino-XX-XX-DevB" for devices ending with the last 4 digits of the MAC address or "/dev/tty.BITalino-DevB" for the remaining
-    
-macAddress = "/dev/tty.BITalino-BD-37-Bluetoot" # "98:D3:91:FD:40:4D"
-
-acqChannels = [0] # record A1 
-samplingRate = 1000
 nSamples = 1000
-
-
-# path for folder where file is saved
-datapath = 'data'
-
 
 def record(device, condition, running_time, plot=True):
     ''' performs the EMG recording for 'running_time' seconds
@@ -46,7 +32,7 @@ def record(device, condition, running_time, plot=True):
     signal = [] 
 
     # Start Acquisition
-    device.start(samplingRate, acqChannels)
+    device.start(BITALINO_SRATE, BITALINO_ACQ_CHANNELS)
 
     print("RECORDING STARTED!")
 
@@ -71,7 +57,7 @@ def record(device, condition, running_time, plot=True):
     print("RECORDING STOPPED!")
     
     # saves data to file
-    with open('%s/%s.pkl' % (datapath, condition), 'wb') as f:
+    with open('%s/%s.pkl' % (EMG_DATA_PATH, condition), 'wb') as f:
         pickle.dump(signal, f)    
 
     # plots the data
@@ -93,7 +79,7 @@ def main():
         running_time = int(sys.argv[2])
 
     # Connect to BITalino
-    device = BITalino(macAddress)
+    device = BITalino(BITALINO_MAC_ADDRESS)
 
     # countdown of 3 seconds before recording start
     print("\n\nwill record '%s' for %d seconds!\n\nGet ready!" % (condition, running_time))

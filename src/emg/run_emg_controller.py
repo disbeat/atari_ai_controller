@@ -20,33 +20,16 @@ import sys
 import json
 #from requests import post
 from pythonosc import udp_client
+from ..configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
-# configs
-models_path = 'models'
-
-
-ATARI_SERVER_IP = "localhost"
-ATARI_SERVER_PORT = 5555
-
-
-## device configs
-
-# The macAddress variable on Windows can be "XX:XX:XX:XX:XX:XX" or "COMX"
-# while on Mac OS can be "/dev/tty.BITalino-XX-XX-DevB" for devices ending with the last 4 digits of the MAC address or "/dev/tty.BITalino-DevB" for the remaining
-    
-macAddress = '/dev/tty.BITalino-BD-37-Bluetoot' #"/dev/tty.BITalino" # "98:D3:91:FD:40:4D"
-
-batteryThreshold = 30
-acqChannels = [0] # record A1
-samplingRate = 1000
 
 client = None
 
 
 def load_model(file_name):
     ''' loads a model from the models folder '''
-    with open(f'{models_path}/{file_name}.pkl', 'rb') as f:
+    with open(f'{EMG_MODELS_PATH}/{file_name}.pkl', 'rb') as f:
         return pickle.load(f)
 
 
@@ -123,15 +106,15 @@ def main():
     
     print('connecing to bitalino')
     # Connect to BITalino
-    device = BITalino(macAddress)
+    device = BITalino(BITALINO_ADDRESS)
     print('connected')
 
     # Start Acquisition
-    device.start(samplingRate, acqChannels)
+    device.start(BITALINO_SRATE, BITALINO_ACQ_CHANNELS)
 
 
     try:
-        make_predictions(model, device, args.window, args.mqtt_topic, client)
+        make_predictions(model, device, args.window, client)
     except KeyboardInterrupt:
         pass
     finally:

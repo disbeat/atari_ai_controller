@@ -1,0 +1,27 @@
+
+# set up osc server
+ATARI_SERVER_IP = "127.0.0.1"
+ATARI_SERVER_PORT = 5555
+
+SOUND_SERVER_IP = "127.0.0.1"
+SOUND_SERVER_PORT = 6666
+
+LOCALHOST = "127.0.0.1"
+POSE_SERVER_PORT = 7777
+
+MY_SKELETON_ID = 0
+
+POSE_DATA_PATH = 'data/pose'
+POSE_MODELS_PATH = 'models/pose'
+
+EMG_DATA_PATH = 'data/emg'
+EMG_MODELS_PATH = 'models/emg'
+
+    
+BITALINO_ADDRESS = "/dev/tty.BITalino-BD-37-Bluetoot" # "98:D3:91:FD:40:4D"
+
+BITALINO_ACQ_CHANNELS = [0] # record A1 
+BITALINO_SRATE = 1000
+
+
+
