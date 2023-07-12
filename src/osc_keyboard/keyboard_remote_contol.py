@@ -30,7 +30,7 @@ def send_command(command):
     ''' Sends the command to the OSC server. '''
     global client
     print("sending command: " + str(command))
-    client.send_message("/action", command)
+    client.send_message("/pose", command)
 
 
 def on_press(key):

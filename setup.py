@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 with open('requirements.txt') as f:
@@ -10,7 +10,9 @@ setup(name='atari_ai_controller',
       url='https://github.com/disbeat/atari_ai_controller',
       author='Marco Simoes',
       author_email='msimoes@dei.uc.pt',
-      packages=['configs', 'emg', 'pose_tracker', 'ai', 'atari_emulator'],
-      package_dir={'configs': 'src/configs', 'emg': 'src/emg', 'pose_tracker': 'src/pose_tracker', 'ai': 'src/ai', 'atari_emulator': 'src/atari_emulator'},
+      package_dir={"": "src"},
+      packages = find_packages(
+            where='src',
+      ),
       install_requires=required,
       zip_safe=False)

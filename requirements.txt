@@ -1,7 +1,6 @@
 ale-py
 python-osc
 pynput
-bitalino
 sklearn
 matplotlib
 numpy

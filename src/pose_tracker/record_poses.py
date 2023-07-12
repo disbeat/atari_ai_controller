@@ -24,7 +24,7 @@ import sys
 import pickle
 import time
 import socket
-from configs import MY_SKELETON_ID, LOCALHOST, POSE_SERVER_PORT, POSE_DATA_PATH
+from configs import MY_SKELETON_ID, SERVER_LOCALHOST, POSE_SERVER_PORT, POSE_DATA_PATH
 
 
 
@@ -65,7 +65,7 @@ async def init_main(condition, running_time):
     dispatcher = Dispatcher()
     dispatcher.map("/pose", record_pose)
     
-    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((SERVER_LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
 
     
