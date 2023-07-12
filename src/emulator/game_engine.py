@@ -103,7 +103,7 @@ async def init_main():
     dispatcher.map("/action", process_command)
     
     # initialize OSC server
-    server = AsyncIOOSCUDPServer((SERVER_LOCALHOST, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((SERVER_LOCALHOST, 9999), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
     
     await run_atari()  # Enter main loop of program

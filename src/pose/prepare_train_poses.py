@@ -16,7 +16,7 @@ import numpy as np
 import pickle
 import sys
 from configs import POSE_DATA_PATH
-
+from ai.talento import extract_features_from_pose, extract_features_from_emg_segment
 # configs
 datapath = 'data'
 
@@ -34,14 +34,15 @@ condition_codes = {
 def extract_features(poses, cond):
     ''' Given a pose, extracts the features for classification '''
     
-    # normalize based on joint 0
-    for axis in range(3):
-        poses[:, axis::3] = poses[:, axis::3] - np.reshape(poses[:, axis], [poses.shape[0], 1])
-    
-    # all normalized joints will serve as features
-    features = poses
+    features = []
 
-     # condition label
+    for p in range(poses.shape[0]):
+        pose = poses[p, :]
+        features.append(extract_features_from_pose(pose))
+
+    features = np.array(features)
+    
+    # condition label
     labels = np.ones(shape=[features.shape[0], 1]) * condition_codes[cond]
 
     # combine features and labels in a table

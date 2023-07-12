@@ -24,6 +24,7 @@ import sys
 import json
 #from requests import post
 from pythonosc import udp_client
+from ai.talento import extract_features_from_emg_segment, predict_from_emg_features
 from configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
@@ -50,29 +51,15 @@ def send_action(prediction, client):
     print("fire!")
 
 
-def preprocess_signal(signal):
-    ''' Centers the signal around zero and rectifies the wave so all 
-    values are positive'''
-
-    # zero center
-    signal = signal - 512
-
-    # wave rectifier
-    signal = np.abs(signal)
-
-    return signal
-
 
 def get_data(device, window):
     ''' Reads a segment of EMG data from the device and returns the features'''
     
     r = np.array(device.read(window))
    
-    # preprocess signal
-    signal = preprocess_signal(r[:, -1])
     
     # extract features
-    features = [np.mean(signal), np.std(signal)]
+    features = extract_features_from_emg_segment(r[:, -1].tolist())
 
     return [features]
 
@@ -84,7 +71,8 @@ def make_predictions(model, device, window, client):
     print('Acquiring')
     while True:
         data = get_data(device, window)
-        prediction = model.predict(data)[0]
+
+        prediction = int(predict_from_emg_features(data, model))
         if prediction != previous_pred:
             if prediction == 1:
                 # if was rest and now is fire

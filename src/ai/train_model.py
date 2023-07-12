@@ -38,7 +38,7 @@ def train_model(data, model):
     
     # separates features from labels
     features  = data[:,:-1]
-    actions = data[:,-1]
+    actions = data[:,-1].astype(int)
     
     # trains the model
     model.fit(features, actions)
@@ -52,7 +52,7 @@ def train_and_evaluate(data, model):
     
     # separates features from labels
     features  = data[:,:-1]
-    actions = data[:,-1]
+    actions = data[:,-1].astype(int)
 
     # plots feature_1 vs feature_2 in a scatter plot, different classes represented by different colors
     rel = sns.scatterplot(x=features[:,0], y=features[:,1], hue=actions)

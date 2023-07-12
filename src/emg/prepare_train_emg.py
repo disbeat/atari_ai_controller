@@ -19,7 +19,7 @@ import numpy as np
 import pickle
 import sys
 from configs import EMG_DATA_PATH, EMG_SEGMENTATION_WINDOW
-
+from ai.talento import extract_features_from_emg_segment
 
 
 condition_codes = {
@@ -27,17 +27,6 @@ condition_codes = {
     'fire': 1
 }
 
-def preprocess_signal(signal):
-    ''' Centers the signal around zero and rectifies the wave so all 
-    values are positive'''
-
-    # zero center
-    signal = signal - 512
-
-    # wave rectifier
-    signal = np.abs(signal)
-
-    return signal
 
 
 
@@ -49,21 +38,21 @@ def extract_features(signal, cond, winlen):
 
     n = signal.shape[0]
 
-    # preprocessing
-    signal = preprocess_signal(signal)
-    
     # segmentation
     signal = np.reshape(signal, [n//winlen, winlen])
     
     # feature extraction (mean value for each segment)
-    feat1 = np.mean(signal, axis=1)
-    feat2 = np.std(signal, axis=11)
+    features = []
+    for s in range(signal.shape[0]):
+        features.append(extract_features_from_emg_segment(signal[s, :]))
+
+    features = np.array(features)
 
     # condition label
-    labels = np.ones(shape=signal.shape) * condition_codes[cond]
+    labels = np.ones(shape=[features.shape[0],1]) * condition_codes[cond]
 
     # combine features and labels in a table
-    features = np.vstack((feat1, feat2, labels)).T
+    features = np.hstack((features, labels))
 
     return features
 
