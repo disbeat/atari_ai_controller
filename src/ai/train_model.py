@@ -6,12 +6,12 @@ Script for training model to classify conditions based on features
 
 To use, specify the model to use (svm, logistic_regression, etc)
 
-Ex: "python3 train_model.py --type 'pose' --model 'svm'" will train an SVM model for pose files
+Ex: "python3 train_model.py --type pose --model svm" will train an SVM model for pose files
 
 Additional, to evaluate the performance of the model, add the parameter 
 --train_and_evaluate set to True
 
-Ex: "python3 train_model.py --type 'emg' --model 'svm' --train_and_evaluate True"
+Ex: "python3 train_model.py --type emg --model svm --train_and_evaluate True"
 will train and evaluate an SVM model for EMG files
 
 Created by Marco Simoes (msimoes@dei.uc.pt) and Nuno Lourenco (naml@dei.uc.pt)

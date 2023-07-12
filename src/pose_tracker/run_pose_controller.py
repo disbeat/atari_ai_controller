@@ -6,7 +6,7 @@ Script for running the pose controller to control the plain movement in River Ra
 
 To use, specify the model to use (previously trained in the models folder)
 
-Ex: "python3 run_pose_controller.py --model 'svm'" will load the 
+Ex: "python3 run_pose_controller.py --model svm" will load the 
 svm model and evaluate each pose to send a new command to the 
 ATARI emulator server via OSC 
 

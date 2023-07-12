@@ -56,8 +56,8 @@ def extract_features(signal, cond, winlen):
     signal = np.reshape(signal, [n//winlen, winlen])
     
     # feature extraction (mean value for each segment)
-    feat1 = np.mean(signal, 1)
-    feat2 = np.std(signal, 1)
+    feat1 = np.mean(signal, axis=1)
+    feat2 = np.std(signal, axis=11)
 
     # condition label
     labels = np.ones(shape=signal.shape) * condition_codes[cond]

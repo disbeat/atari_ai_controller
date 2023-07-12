@@ -7,7 +7,7 @@ Script for running the EMG controller to control the fire mecanism of River Raid
 To use, specify the model to use (previously trained in the models folder), 
 the window size (in ms)
 
-Ex: "python3 run_emg_controller.py --model 'svm' --window 250" will load the 
+Ex: "python3 run_emg_controller.py --model svm --window 250" will load the 
 svm model and evaluate the EMG at each 250 ms to send a new command to the 
 ATARI emulator server via OSC 
 

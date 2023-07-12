@@ -30,7 +30,7 @@ src/configs/__init__.py
 
     3. Train pose classifier
     ```
-    "python3 src/ai/train_model.py --type 'pose' --model 'svm' --train_and_evaluate True
+    "python3 src/ai/train_model.py --type pose --model svm --train_and_evaluate True
     ```
 
 3. Prepare emg classifier
@@ -47,10 +47,10 @@ src/configs/__init__.py
 
     3. Train emg classifier
     ```
-    python3 src/ai/train_model.py --type 'pose' --model 'svm' --train_and_evaluate True
+    python3 src/ai/train_model.py --type emg --model svm --train_and_evaluate True
     ```
 4. Run pose and emg controlled in parallel
 ```
-python3 src/pose_tracker/run_pose_controller.py --model 'svm'
-python3 src/emg/run_emg_controller.py --model 'svm'
+python3 src/pose_tracker/run_pose_controller.py --model svm
+python3 src/emg/run_emg_controller.py --model svm
 ```
