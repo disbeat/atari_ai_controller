@@ -24,7 +24,7 @@ import asyncio
 import sys
 import pickle
 import argparse
-from configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, LOCALHOST, POSE_SERVER_PORT
+from configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, SERVER_LOCALHOST, POSE_SERVER_PORT
 
 
 
@@ -77,10 +77,12 @@ def read_pose(address, *args):
         
         features = extract_features(pose)
         
-        prediction = model.predict(features)[0]
+        prediction = int(model.predict([features])[0])
         if prediction != previous_pred:
             send_action(prediction, client)
-            previous_pred = prediction
+        #else:
+        #    send_action(0, client)
+        previous_pred = prediction
 
 
 async def loop_forever():
@@ -94,7 +96,7 @@ async def init_main():
     dispatcher = Dispatcher()
     dispatcher.map("/pose", read_pose)
     
-    server = AsyncIOOSCUDPServer((LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((SERVER_LOCALHOST, POSE_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()  # Create datagram endpoint and start serving
 
     await loop_forever()  # Enter main loop of program
@@ -115,9 +117,12 @@ def main():
     # Parse the argument
     args = parser.parse_args()
     
-    model = load_model(args.model_name)
+    model = load_model(args.model)
     
     if not args.debug:
         client = establish_atari_connection()
    
     asyncio.run(init_main())
+
+if __name__ == '__main__':
+    main()

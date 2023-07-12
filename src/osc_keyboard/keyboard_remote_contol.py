@@ -18,11 +18,11 @@ from time import sleep
 from pythonosc import udp_client
 
 DEFAULT_IP = "127.0.0.1"
-DEFAULT_PORT = 12345
+DEFAULT_PORT = 5555
  
 client = None
 
-mapping = {'Key.space': 1, 'Key.up': 2, 'Key.right': 3, 'Key.left': 4, 'Key.down': 5, "'r'": -1}
+mapping = {"'r'": -1, 'Key.space': 1, 'Key.up': 2, 'Key.right': 3, 'Key.left': 4, 'Key.down': 5} 
 
 
 
@@ -30,7 +30,7 @@ def send_command(command):
     ''' Sends the command to the OSC server. '''
     global client
     print("sending command: " + str(command))
-    client.send_message("/pose", command)
+    client.send_message("/action", command)
 
 
 def on_press(key):

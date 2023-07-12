@@ -36,7 +36,7 @@ def extract_features(poses, cond):
     
     # normalize based on joint 0
     for axis in range(3):
-        poses[:, axis::3] = poses[:, axis::3] - poses[:, axis]
+        poses[:, axis::3] = poses[:, axis::3] - np.reshape(poses[:, axis], [poses.shape[0], 1])
     
     # all normalized joints will serve as features
     features = poses

@@ -1,8 +1,8 @@
 ale-py
 python-osc
 pynput
-sklearn
+scikit-learn
 matplotlib
 numpy
 seaborn
-bitalino
+requests

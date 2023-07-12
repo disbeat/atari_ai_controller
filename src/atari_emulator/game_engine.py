@@ -14,7 +14,7 @@ from ale_py import ALEInterface, SDL_SUPPORT
 from pythonosc.osc_server import AsyncIOOSCUDPServer
 from pythonosc.dispatcher import Dispatcher
 import asyncio
-from configs import ATARI_SERVER_PORT, LOCALHOST
+from configs import ATARI_SERVER_PORT, SERVER_LOCALHOST
 
 # global variables
 action = 0
@@ -103,7 +103,7 @@ async def init_main():
     dispatcher.map("/action", process_command)
     
     # initialize OSC server
-    server = AsyncIOOSCUDPServer((LOCALHOST, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((SERVER_LOCALHOST, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
     transport, protocol = await server.create_serve_endpoint()
     
     await run_atari()  # Enter main loop of program

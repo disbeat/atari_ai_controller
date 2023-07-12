@@ -74,7 +74,9 @@ def train_and_evaluate(data, model):
     # evaluates the model on the test data
     predictions = model.predict(features_test)
     cm = confusion_matrix(actions_test, predictions)
+    print(cm)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    plt.show()
     #post('http://127.0.0.1:8050/matrix/test', data={'data': json.dumps(cm.tolist())})
     return model
 
@@ -93,7 +95,8 @@ def load_dataset():
 
 def main():
     ''' Trains an svm or logistic regression model based on the data in the file features.pkl '''
-    
+    global data_path
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--type', type=str, required=True, const='emg', default='emg', nargs='?')
     parser.add_argument('--model', type=str, required=True, const='svm', default='svm', nargs='?')
