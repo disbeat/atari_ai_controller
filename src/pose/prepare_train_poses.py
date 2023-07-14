@@ -16,7 +16,7 @@ import numpy as np
 import pickle
 import sys
 from configs import POSE_DATA_PATH
-from ai.talento import extract_features_from_pose, extract_features_from_emg_segment
+from ai import talento
 # configs
 datapath = 'data'
 
@@ -38,7 +38,7 @@ def extract_features(poses, cond):
 
     for p in range(poses.shape[0]):
         pose = poses[p, :]
-        features.append(extract_features_from_pose(pose))
+        features.append(talento.extract_features_from_pose(pose))
 
     features = np.array(features)
     

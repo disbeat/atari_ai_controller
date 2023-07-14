@@ -7,6 +7,20 @@ created by Marco Simoes (msimoes.dei.uc.pt)
 '''
 import numpy as np
 
+
+def preprocess_signal(signal):
+    ''' Centers the signal around zero and rectifies the wave so all 
+    values are positive'''
+
+    # zero center
+    signal = signal - 512
+
+    # wave rectifier
+    signal = np.abs(signal)
+
+    return signal
+
+
 def extract_features_from_pose(pose):
     ''' Given a pose, extracts the features for classification '''
     
@@ -33,6 +47,10 @@ def extract_features_from_pose(pose):
 
 def extract_features_from_emg_segment(segment):
     ''' Given a segment of EMG signal, extracts the features for classification'''
+    
+    # preprocess segment
+    segment = preprocess_signal(segment)
+
     # feature 1 - mean value
     f1 = np.mean(segment)
 
@@ -43,31 +61,20 @@ def extract_features_from_emg_segment(segment):
     return features
 
 
-
-
-def preprocess_signal(signal):
-    ''' Centers the signal around zero and rectifies the wave so all 
-    values are positive'''
-
-    # zero center
-    signal = signal - 512
-
-    # wave rectifier
-    signal = np.abs(signal)
-
-    return signal
-
-
-def predict_from_emg_features(features, model):
+def predict_from_emg_segment(segment, model):
     ''' Given a set of features, predicts the class using the model '''
+
+    features = extract_features_from_emg_segment(segment)
 
     prediction = int(model.predict(features)[0])
 
     return prediction
 
 
-def predict_from_pose_features(features, model):
+def predict_from_pose(pose, model):
     ''' Given a set of features, predicts the class using the model '''
+
+    features = extract_features_from_pose(pose)
 
     prediction = int(model.predict(features)[0])
 

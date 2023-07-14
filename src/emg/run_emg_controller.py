@@ -24,7 +24,7 @@ import sys
 import json
 #from requests import post
 from pythonosc import udp_client
-from ai.talento import extract_features_from_emg_segment, predict_from_emg_features
+from ai import talento
 from configs import EMG_MODELS_PATH, ATARI_SERVER_IP, ATARI_SERVER_PORT, BITALINO_MAC_ADDRESS, BITALINO_ACQ_CHANNELS, BITALINO_SRATE
 
 
@@ -59,7 +59,7 @@ def get_data(device, window):
    
     
     # extract features
-    features = extract_features_from_emg_segment(r[:, -1].tolist())
+    features = talento.extract_features_from_emg_segment(r[:, -1].tolist())
 
     return [features]
 
@@ -72,7 +72,7 @@ def make_predictions(model, device, window, client):
     while True:
         data = get_data(device, window)
 
-        prediction = int(predict_from_emg_features(data, model))
+        prediction = int(talento.predict_from_emg_segment(data, model))
         if prediction != previous_pred:
             if prediction == 1:
                 # if was rest and now is fire

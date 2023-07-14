@@ -19,7 +19,7 @@ import numpy as np
 import pickle
 import sys
 from configs import EMG_DATA_PATH, EMG_SEGMENTATION_WINDOW
-from ai.talento import extract_features_from_emg_segment
+from ai import talento
 
 
 condition_codes = {
@@ -41,10 +41,10 @@ def extract_features(signal, cond, winlen):
     # segmentation
     signal = np.reshape(signal, [n//winlen, winlen])
     
-    # feature extraction (mean value for each segment)
+    # feature extraction for each segment
     features = []
     for s in range(signal.shape[0]):
-        features.append(extract_features_from_emg_segment(signal[s, :]))
+        features.append( talento.extract_features_from_emg_segment( signal[s, :] ) )
 
     features = np.array(features)
 

@@ -25,7 +25,7 @@ import sys
 import pickle
 import argparse
 from configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, SERVER_LOCALHOST, POSE_SERVER_PORT
-from ai.talento import extract_features_from_pose
+from ai import talento
 
 
 
@@ -64,7 +64,7 @@ def read_pose(address, *args):
         # skip timestamp and skeleton id
         pose = args[1:]
         
-        features = extract_features_from_pose(pose)
+        features = talento.extract_features_from_pose(pose)
         
         prediction = int(model.predict([features])[0])
         if prediction != previous_pred:

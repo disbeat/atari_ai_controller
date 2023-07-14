@@ -54,9 +54,10 @@ def train_and_evaluate(data, model):
     features  = data[:,:-1]
     actions = data[:,-1].astype(int)
 
-    # plots feature_1 vs feature_2 in a scatter plot, different classes represented by different colors
-    rel = sns.scatterplot(x=features[:,0], y=features[:,1], hue=actions)
-    rel.set(title='Data Distribution')
+    if features.shape[1] > 1:
+        # plots feature_1 vs feature_2 in a scatter plot, different classes represented by different colors
+        rel = sns.scatterplot(x=features[:,0], y=features[:,1], hue=actions)
+        rel.set(title='Data Distribution')
     
     
     # splits data into training and test sets
@@ -69,15 +70,13 @@ def train_and_evaluate(data, model):
     predictions = model.predict(features_train)
     cm = confusion_matrix(actions_train, predictions)
     #disp = ConfusionMatrixDisplay(confusion_matrix=cm)
-    #post('http://127.0.0.1:8050/matrix/predict', data={'data': json.dumps(cm.tolist())})
     
     # evaluates the model on the test data
     predictions = model.predict(features_test)
     cm = confusion_matrix(actions_test, predictions)
     print(cm)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
     plt.show()
-    #post('http://127.0.0.1:8050/matrix/test', data={'data': json.dumps(cm.tolist())})
+    
     return model
 
 
@@ -86,7 +85,6 @@ def load_dataset():
     
     with open('%s/features.pkl' % data_path, 'rb') as f:
         data = pickle.load(f)
-    #post('http://127.0.0.1:8050/features', data={'data': json.dumps([data[:,0].tolist(), data[:,1].tolist(), data[:,2].tolist()]), 'mode': 'batch'})
     
     return data
 
