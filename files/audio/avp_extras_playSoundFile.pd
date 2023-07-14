@@ -1,0 +1,15 @@
+#N canvas 403 164 743 362 12;
+#X obj 418 269 dac~ 1 2;
+#X msg 480 158 start;
+#X obj 418 212 readsf~ 2;
+#X obj 357 106 t b b;
+#X obj 356 70 bng 19 250 50 0 empty empty empty 0 -10 0 12 #fcfcfc #000000 #000000;
+#X msg 337 158 open sample.wav;
+#X text 28 48 Toca samples. Pode tocar ficheiros .wav Adicionar a pasta onde está o ficheiro de som em: File->preferences->path, f 31;
+#X connect 1 0 2 0;
+#X connect 2 0 0 0;
+#X connect 2 0 0 1;
+#X connect 3 0 1 0;
+#X connect 3 1 5 0;
+#X connect 4 0 3 0;
+#X connect 5 0 2 0;
