@@ -38,9 +38,9 @@ def load_model(file_name):
         return pickle.load(f)
 
 
-def establish_atari_connection():
+def establish_atari_connection(ip, port):
     ''' Establishes the connection with the ATARI emulator server via OSC'''
-    client = udp_client.SimpleUDPClient(ATARI_SERVER_IP, ATARI_SERVER_PORT)
+    client = udp_client.SimpleUDPClient(ip, port)
     
     return client
 
@@ -87,12 +87,15 @@ def main():
     parser.add_argument('--model', type=str, required=True)
     parser.add_argument('--window', type=int, required=False, default=250)
     parser.add_argument('--debug', type=bool, required=False, default=False)
+    parser.add_argument('--ip', type=str, required=False, default=ATARI_SERVER_IP)
+    parser.add_argument('--port', type=int, required=False, default=ATARI_SERVER_PORT)
+    
     # Parse the argument
     args = parser.parse_args()
     model = load_model(args.model)
     
     if not args.debug:
-        client = establish_atari_connection()
+        client = establish_atari_connection(args.ip, args.port)
     
     print('connecing to bitalino')
     # Connect to BITalino

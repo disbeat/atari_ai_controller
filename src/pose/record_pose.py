@@ -7,7 +7,7 @@ Script for recording pose snapshots of a specific condition
 To use, specify the condition name and recording duration (in seconds)
 as the first two arguments.
 
-Ex: "python3 record_poses.py --condition left --duration 30 --skel 0" will record data for the left 
+Ex: "python3 record_pose.py --condition left --duration 30 --skel 0" will record data for the left 
 condition during 30 seconds from skeleton 0, and save it in the file fire.pkl in the 
 data folder.
 
@@ -78,7 +78,7 @@ async def init_main(condition, duration):
 
 
 def main():
-    ''' Run in the format record_poses.py condition duration_in_secs'''
+    ''' Run in the format record_pose.py condition duration_in_secs'''
 
     global skel_id
 

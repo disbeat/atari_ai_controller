@@ -21,16 +21,11 @@ from pythonosc import udp_client
 import argparse
 import random
 import time
-from configs import ATARI_SERVER_IP, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT
+from configs import ATARI_SERVER_IP, ATARI_SERVER_PORT, SOUND_SERVER_IP, SOUND_SERVER_PORT, ROM_FILE
 
 # global variables
 action = 0
 reward = 0
-
-# ids of the RAM values of interest for sound play
-ram_ids_of_interest = [7, 58, 104, 120, 121, 122, 123]
-prev_ram_values = {ram_id: 0 for ram_id in ram_ids_of_interest}
-
 
 
 def process_command(address, *args):
@@ -51,7 +46,7 @@ def sendRam(client, ram):
 
 
 
-async def run_atari():
+async def run_atari(sound_client, rom_file):
     ''' Launches the ATARI emulator and enters the main loop that acts on the emulator every time a new action is received'''
 
     global action
@@ -64,12 +59,11 @@ async def run_atari():
 
     # check if we can display the screen
     if SDL_SUPPORT:
-        print("with sound")
+        # deactivate sound
         ale.setBool("sound", False)
         ale.setBool("display_screen", True)
 
     # Load the ROM file
-    rom_file = sys.argv[1]
     ale.loadROM(rom_file)
 
     # Get the list of legal actions
@@ -80,7 +74,6 @@ async def run_atari():
     avail_modes = ale.getAvailableModes()
     print('available modes:', avail_modes)
 
-    client = udp_client.SimpleUDPClient(SOUND_SERVER_IP, SOUND_SERVER_PORT)
 
     # main loop that acts on the emulator every time a new action is received
     while True:
@@ -97,11 +90,11 @@ async def run_atari():
         # get the RAM values
         ram = ale.getRAM()
         #ram size = 128
-        sendRam(client, ram)
+        sendRam(sound_client, ram)
         await asyncio.sleep(0.005)
 
 
-async def init_main():
+async def init_main(atari_ip, atari_port, sound_port, rom_file):
     ''' Set up OSC server and initializes atari'''
 
     # create dispatcher that listens for messages on /action
@@ -109,33 +102,37 @@ async def init_main():
     dispatcher.map("/action", process_command)
 
     # initialize OSC server
-    server = AsyncIOOSCUDPServer((ATARI_SERVER_IP, ATARI_SERVER_PORT), dispatcher, asyncio.get_event_loop())
+    server = AsyncIOOSCUDPServer((atari_ip, atari_port), dispatcher, asyncio.get_event_loop())
 
+    # initialize OSC sound client
+    sound_client = udp_client.SimpleUDPClient(SOUND_SERVER_IP, sound_port)
 
     transport, protocol = await server.create_serve_endpoint()
 
-    await run_atari()  # Enter main loop of program
+    await run_atari(sound_client, rom_file)  # Enter main loop of program
 
     transport.close()  # Clean up serve endpoint
 
 
 def main():
     ''' Reads rom from file and initializes the main loop'''
-    global ATARI_SERVER_PORT, SOUND_SERVER_PORT
-    # parse command line arguments
-    if len(sys.argv) < 2:
-        print(f"Usage: {sys.argv[0]} rom_file [atari_server_port] [sound_server_port]")
-        sys.exit()
     
-    if len(sys.argv) > 2:
-        ATARI_SERVER_PORT = int(sys.argv[2])
-    
-    if len(sys.argv) > 3:
-        SOUND_SERVER_PORT = int(sys.argv[3])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rom", default=ROM_FILE, required=False,
+        help="ROM game file to load in the emulator")
+    parser.add_argument("--atari_ip", default=ATARI_SERVER_IP, required=False,
+        help="The IP address for read commands (ATARI server)")
+    parser.add_argument("--atari_port", default=ATARI_SERVER_PORT, required=False,
+        help="The port for read commands (ATARI server)")
+    parser.add_argument("--sound_port", default=SOUND_SERVER_PORT, required=False,
+        help="The port for read commands (ATARI server)")
+    args = parser.parse_args()
+
+
     
 
 
-    asyncio.run(init_main())
+    asyncio.run(init_main(args.atari_ip, args.atari_port, args.sound_port, args.rom))
 
 if __name__ == "__main__":
     main()
