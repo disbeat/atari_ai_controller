@@ -16,11 +16,11 @@ src/configs/__init__.py
 2. Prepare pose classifier
     1. Collect poses for the five conditions
     ```
-    python3 src/pose_tracker/record_poses.py rest 30
-    python3 src/pose_tracker/record_poses.py left 30
-    python3 src/pose_tracker/record_poses.py right 30
-    python3 src/pose_tracker/record_poses.py up 30
-    python3 src/pose_tracker/record_poses.py down 30
+    python3 src/pose_tracker/record_poses.py --condition rest --duration 30 --skel 0
+    python3 src/pose_tracker/record_poses.py --condition left --duration 30 --skel 0
+    python3 src/pose_tracker/record_poses.py --condition right --duration 30 --skel 0
+    python3 src/pose_tracker/record_poses.py --condition up --duration 30 --skel 0
+    python3 src/pose_tracker/record_poses.py --condition down --duration 30 --skel 0
     ```
 
     2. Extract features and merge conditions
@@ -36,13 +36,13 @@ src/configs/__init__.py
 3. Prepare emg classifier
     1. Collect emg for the two conditions
     ```
-    python3 src/emg/record_emg.py rest 30
-    python3 src/emg/record_emg.py fire 30
+    python3 src/emg/record_emg.py --condition rest --duration 30
+    python3 src/emg/record_emg.py --condition fire --duration 30
     ```
 
     2. Extract features and merge conditions
     ```
-    python3 src/emg/prepare_train_emg.py
+    python3 src/emg/prepare_train_emg.py --window 250
     ```
 
     3. Train emg classifier
@@ -51,6 +51,10 @@ src/configs/__init__.py
     ```
 4. Run pose and emg controlled in parallel
 ```
-python3 src/pose_tracker/run_pose_controller.py --model svm
-python3 src/emg/run_emg_controller.py --model svm
+python3 src/pose_tracker/run_pose_controller.py --model svm --skel 0
+python3 src/emg/run_emg_controller.py --model svm --window 250
 ```
+
+## IMPORTANT!
+
+Always run ``` pip install . ``` after each code change!

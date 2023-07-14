@@ -74,11 +74,8 @@ def make_predictions(model, device, window, client):
 
         prediction = int(talento.predict_from_emg_segment(data, model))
         if prediction != previous_pred:
-            if prediction == 1:
-                # if was rest and now is fire
-                send_action(prediction, client)
-                #post('http://127.0.0.1:8050/simulator', data={'data': json.dumps([prediction]), 'mode': 'stream'})
-            
+            # if was rest and now is fire
+            send_action(prediction, client)
             previous_pred = prediction
             
 

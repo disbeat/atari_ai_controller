@@ -6,8 +6,8 @@ Script for running the pose controller to control the plain movement in River Ra
 
 To use, specify the model to use (previously trained in the models folder)
 
-Ex: "python3 run_pose_controller.py --model svm" will load the 
-svm model and evaluate each pose to send a new command to the 
+Ex: "python3 run_pose_controller.py --model svm --skel 0" will load the 
+svm model and evaluate each pose from skel 0 to send a new command to the 
 ATARI emulator server via OSC 
 
 
@@ -32,6 +32,7 @@ from ai import talento
 client = None
 model = None
 previous_pred = 0
+skel_id = None
 
 
 def load_model(file_name):
@@ -97,14 +98,16 @@ async def init_main():
 
 def main():
     ''' Main function for running the pose controller, run as "python3 run_pose_controller.py --model 'svm'" '''
-    global model, client
+    global model, client, skel_id
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--model', type=str, required=True)
     parser.add_argument('--debug', type=bool, required=False, default=False)
+    parser.add_argument('--skel', type=int, required=False, default=MY_SKELETON_ID)
     
     # Parse the argument
     args = parser.parse_args()
+    skel_id = args.skel
     
     model = load_model(args.model)
     

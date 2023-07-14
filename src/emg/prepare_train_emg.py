@@ -9,12 +9,13 @@ condition in the data folder
 
 To run, provide the window duration for the segmentation (in ms) as argument.
 
-Ex: "python3 prepare_train_emg.py 250" split the signals in segments of 250ms and 
+Ex: "python3 prepare_train_emg.py --window 250" split the signals in segments of 250ms and 
 extract features for each segment
 
 Created by Marco Simões (msimoes@dei.uc.pt)
 '''
 
+import argparse
 import numpy as np
 import pickle
 import sys
@@ -60,10 +61,13 @@ def extract_features(signal, cond, winlen):
 def main():
     ''' Run in the format prepare_train_emg.py window_size (in ms)'''
     
-    window = EMG_SEGMENTATION_WINDOW
-    if len(sys.argv) > 0:
-        window = int(sys.argv[1])
-
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--window', type=int, required=False, default=EMG_SEGMENTATION_WINDOW)
+    
+    # Parse the argument
+    args = parser.parse_args()
+    window = args.window
     
     features = []
 
