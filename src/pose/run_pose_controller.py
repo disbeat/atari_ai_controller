@@ -25,6 +25,7 @@ import sys
 import pickle
 import argparse
 from configs import MY_SKELETON_ID, ATARI_SERVER_IP, ATARI_SERVER_PORT, POSE_MODELS_PATH, POSE_DATA_PATH, SERVER_LOCALHOST, POSE_SERVER_PORT
+from ai.talento import extract_features_from_pose
 
 
 
@@ -47,19 +48,6 @@ def establish_atari_connection():
 
 
 
-def extract_features(pose):
-    ''' Given a pose, extracts the features for classification '''
-    # preprocess pose
-    pose = np.array(pose)
-
-    # normalize based on joint 0
-    for axis in range(3):
-        pose[axis::3] = pose[axis::3] - pose[axis]
-    
-    # all normalized joints will serve as features
-    features = pose
-    return features
-
 
 def send_action(prediction, client):
     ''' Sends command to atari server via OSC'''
@@ -71,11 +59,12 @@ def read_pose(address, *args):
     ''' Records a pose snapshot sent via OSC '''
     global previous_pred
     
+    print(args)
     if args[0] == MY_SKELETON_ID:
         # skip timestamp and skeleton id
         pose = args[1:]
         
-        features = extract_features(pose)
+        features = extract_features_from_pose(pose)
         
         prediction = int(model.predict([features])[0])
         if prediction != previous_pred:

@@ -92,7 +92,7 @@ def main():
     parser.add_argument('--debug', type=bool, required=False, default=False)
     # Parse the argument
     args = parser.parse_args()
-    model = load_model(args.model_name)
+    model = load_model(args.model)
     
     if not args.debug:
         client = establish_atari_connection()
