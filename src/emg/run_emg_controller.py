@@ -58,10 +58,7 @@ def get_data(device, window):
     r = np.array(device.read(window))
    
     
-    # extract features
-    features = talento.extract_features_from_emg_segment(r[:, -1].tolist())
-
-    return [features]
+    return r[:, -1].tolist()
 
 
 def make_predictions(model, device, window, client):

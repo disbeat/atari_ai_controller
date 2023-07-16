@@ -66,7 +66,7 @@ def predict_from_emg_segment(segment, model):
 
     features = extract_features_from_emg_segment(segment)
 
-    prediction = int(model.predict(features)[0])
+    prediction = int([model.predict(features)[0]])
 
     return prediction
 
@@ -76,6 +76,6 @@ def predict_from_pose(pose, model):
 
     features = extract_features_from_pose(pose)
 
-    prediction = int(model.predict(features)[0])
+    prediction = int([model.predict(features)[0]])
 
     return prediction

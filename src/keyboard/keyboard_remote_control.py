@@ -17,7 +17,7 @@ from time import sleep
 
 from pythonosc import udp_client
 
-DEFAULT_IP = "10.6.0.226"
+DEFAULT_IP = "127.0.0.1"
 DEFAULT_PORT = 5555
  
 client = None
